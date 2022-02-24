@@ -3,13 +3,19 @@ package edu.cnm.deepdive.codebreaker.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -61,6 +67,12 @@ public class User {
 
   @Column(nullable = false)
   private boolean incognito;
+
+  @NonNull
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+      cascade = CascadeType.ALL, orphanRemoval = true)
+  @OrderBy("created DESC")
+  private final List<Game> games = new LinkedList<>();
 
   @NonNull
   public UUID getId() {
@@ -119,4 +131,15 @@ public class User {
   public void setIncognito(boolean incognito) {
     this.incognito = incognito;
   }
+
+  @NonNull
+  public List<Game> getGames() {
+    return games;
+  }
+
+  @PrePersist
+  private void generateExternalKey() {
+    externalKey = UUID.randomUUID();
+  }
+
 }
