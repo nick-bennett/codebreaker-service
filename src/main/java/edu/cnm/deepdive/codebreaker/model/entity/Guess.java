@@ -7,11 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.UUID;
-import java.util.function.Predicate;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,8 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -30,13 +24,13 @@ import org.springframework.lang.NonNull;
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @JsonInclude(Include.NON_NULL)
-@JsonPropertyOrder({"id", "created", "pool", "length", "solved", "text"})
-public class Game {
+@JsonPropertyOrder({"id", "created", "text", "exactMatches", "nearMatches", "solution"})
+public class Guess {
 
   @NonNull
   @Id
   @GeneratedValue
-  @Column(name = "game_id", updatable = false, nullable = false, columnDefinition = "UUID")
+  @Column(name = "guess_id", updatable = false, nullable = false, columnDefinition = "UUID")
   @JsonIgnore
   private UUID id;
 
@@ -53,32 +47,21 @@ public class Game {
   private Date created;
 
   @NonNull
-  @Column(nullable = false, updatable = false, length = 255)
-  private String pool;
-
-  @Column(nullable = false, updatable = false)
-  @JsonIgnore
-  private int poolSize;
-
-  @Column(nullable = false, updatable = false)
-  private int length;
-
-  @NonNull
-  @Column(name = "game_text", nullable = false, updatable = false, length = 20)
-  @JsonIgnore
+  @Column(name = "guess_text", nullable = false, updatable = false)
   private String text;
+
+  @Column(nullable = false, updatable = false)
+  @JsonProperty(access = Access.READ_ONLY)
+  private int exactMatches;
+
+  @Column(nullable = false, updatable = false)
+  private int nearMatches;
 
   @NonNull
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false, updatable = false)
+  @JoinColumn(name = "game_id", nullable = false, updatable = false)
   @JsonIgnore
-  private User user;
-
-  @NonNull
-  @OneToMany(mappedBy = "game", fetch = FetchType.EAGER,
-      cascade = CascadeType.ALL, orphanRemoval = true)
-  @OrderBy("created ASC")
-  private final List<Guess> guesses = new LinkedList<>();
+  private Game game;
 
   @NonNull
   public UUID getId() {
@@ -95,27 +78,6 @@ public class Game {
     return created;
   }
 
-  public int getPoolSize() {
-    return poolSize;
-  }
-
-  @NonNull
-  public String getPool() {
-    return pool;
-  }
-
-  public void setPool(@NonNull String pool) {
-    this.pool = pool;
-  }
-
-  public int getLength() {
-    return length;
-  }
-
-  public void setLength(int length) {
-    this.length = length;
-  }
-
   @NonNull
   public String getText() {
     return text;
@@ -125,37 +87,38 @@ public class Game {
     this.text = text;
   }
 
+  public int getExactMatches() {
+    return exactMatches;
+  }
+
+  public void setExactMatches(int exactMatches) {
+    this.exactMatches = exactMatches;
+  }
+
+  public int getNearMatches() {
+    return nearMatches;
+  }
+
+  public void setNearMatches(int nearMatches) {
+    this.nearMatches = nearMatches;
+  }
+
   @NonNull
-  public User getUser() {
-    return user;
+  public Game getGame() {
+    return game;
   }
 
-  public void setUser(@NonNull User user) {
-    this.user = user;
+  public void setGame(@NonNull Game game) {
+    this.game = game;
   }
 
-  @NonNull
-  public List<Guess> getGuesses() {
-    return guesses;
-  }
-
-  public boolean isSolved() {
-    return guesses
-        .stream()
-        .anyMatch(Guess::isSolution);
-  }
-
-  @JsonProperty("text")
-  public String getSolution() {
-    return isSolved() ? text : null;
+  public boolean isSolution() {
+    return exactMatches == game.getLength();
   }
 
   @PrePersist
-  private void generateAdditionalFields() {
+  private void generateExternalKey() {
     externalKey = UUID.randomUUID();
-    poolSize = (int) pool
-        .codePoints()
-        .count();
   }
 
 }

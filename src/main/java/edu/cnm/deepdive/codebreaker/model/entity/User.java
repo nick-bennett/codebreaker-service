@@ -1,8 +1,11 @@
 package edu.cnm.deepdive.codebreaker.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,10 +25,13 @@ import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Table(
     name = "user_profile"
 )
+@JsonInclude(Include.NON_NULL)
+@JsonPropertyOrder({"id", "created", "displayName", "avatar", "incognito"})
 public class User {
 
   @NonNull
