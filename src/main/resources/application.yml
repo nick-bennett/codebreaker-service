@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: service
+  datasource:
+    url: "jdbc:h2:file:./db/codebreaker"
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
