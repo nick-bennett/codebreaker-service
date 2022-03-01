@@ -78,6 +78,7 @@ public class User {
   @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
       cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("created DESC")
+  @JsonIgnore
   private final List<Game> games = new LinkedList<>();
 
   @NonNull
