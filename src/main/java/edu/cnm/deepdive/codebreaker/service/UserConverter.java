@@ -13,10 +13,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserConverter implements Converter<Jwt, UsernamePasswordAuthenticationToken> {
 
-  private final UserService service;
+  private final AbstractUserService service;
 
   @Autowired
-  public UserConverter(UserService service) {
+  public UserConverter(AbstractUserService service) {
     this.service = service;
   }
 

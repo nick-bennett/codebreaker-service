@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.codebreaker.controller;
 
 import edu.cnm.deepdive.codebreaker.model.entity.User;
+import edu.cnm.deepdive.codebreaker.service.AbstractUserService;
 import edu.cnm.deepdive.codebreaker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
-  private final UserService service;
+  private final AbstractUserService service;
 
   @Autowired
-  public UserController(UserService service) {
+  public UserController(AbstractUserService service) {
     this.service = service;
   }
 
