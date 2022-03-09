@@ -1,7 +1,7 @@
 package edu.cnm.deepdive.codebreaker.controller;
 
-import edu.cnm.deepdive.codebreaker.model.entity.Game;
-import edu.cnm.deepdive.codebreaker.service.AbstractGameService;
+import edu.cnm.deepdive.codebreaker.model.entity.Guess;
+import edu.cnm.deepdive.codebreaker.service.AbstractGuessService;
 import edu.cnm.deepdive.codebreaker.service.AbstractUserService;
 import java.net.URI;
 import java.util.UUID;
@@ -18,37 +18,37 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/games")
-public class GameController {
+@RequestMapping("/games/{gameId}/guesses")
+public class GuessController {
 
-  private final AbstractGameService gameService;
+  private final AbstractGuessService guessService;
   private final AbstractUserService userService;
 
   @Autowired
-  public GameController(AbstractGameService gameService, AbstractUserService userService) {
-    this.gameService = gameService;
+  public GuessController(AbstractGuessService guessService, AbstractUserService userService) {
+    this.guessService = guessService;
     this.userService = userService;
+  }
+
+  @GetMapping(value = "/{guessId}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Guess get(@PathVariable UUID gameId, @PathVariable UUID guessId) {
+    return guessService.get(guessId, gameId, userService.getCurrentUser());
   }
 
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Game> post(@Valid @RequestBody Game game) {
-    Game created = gameService.startGame(game, userService.getCurrentUser());
+  public ResponseEntity<Guess> post(@PathVariable UUID gameId, @Valid @RequestBody Guess guess) {
+    Guess created = guessService.submitGuess(guess, gameId, userService.getCurrentUser());
     URI location = WebMvcLinkBuilder
         .linkTo(
             WebMvcLinkBuilder
-                .methodOn(GameController.class)
-                .get(created.getExternalKey())
+                .methodOn(GuessController.class)
+                .get(gameId, created.getExternalKey())
         )
         .toUri();
     return ResponseEntity
         .created(location)
         .body(created);
-  }
-
-  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public Game get(@PathVariable UUID id) {
-    return gameService.get(id, userService.getCurrentUser());
   }
 
 }
