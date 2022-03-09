@@ -40,13 +40,15 @@ public class GuessService implements AbstractGuessService {
 
   @Override
   public Optional<Guess> get(UUID guessId, UUID gameId, User user) {
-    return gameService.get(gameId, user)
+    return gameService
+        .get(gameId, user)
         .flatMap((game) -> guessRepository.findByGameAndExternalKey(game, guessId));
   }
 
   @Override
   public Optional<Iterable<Guess>> get(UUID gameId, User user) {
-    return gameService.get(gameId, user)
+    return gameService
+        .get(gameId, user)
         .map(Game::getGuesses);
   }
 
@@ -71,4 +73,5 @@ public class GuessService implements AbstractGuessService {
         .boxed()
         .collect(Collectors.toSet());
   }
+
 }
