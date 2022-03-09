@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/games")
 public class GameController {
 
+  public static final String ID_PATTERN =
+      "\\p{XDigit}{8}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{4}-\\p{XDigit}{12}";
+
   private final AbstractGameService gameService;
   private final AbstractUserService userService;
 
@@ -46,9 +49,11 @@ public class GameController {
         .body(created);
   }
 
-  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/{id:" + ID_PATTERN + "}", produces = MediaType.APPLICATION_JSON_VALUE)
   public Game get(@PathVariable UUID id) {
-    return gameService.get(id, userService.getCurrentUser());
+    return gameService
+        .get(id, userService.getCurrentUser())
+        .orElseThrow();
   }
 
 }
