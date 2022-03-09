@@ -18,6 +18,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
@@ -48,6 +52,9 @@ public class Guess {
 
   @NonNull
   @Column(name = "guess_text", nullable = false, updatable = false)
+  @NotNull
+  @NotBlank
+  @Size(min = Game.MIN_CODE_LENGTH, max = Game.MAX_CODE_LENGTH)
   private String text;
 
   @Column(nullable = false, updatable = false)
@@ -55,6 +62,7 @@ public class Guess {
   private int exactMatches;
 
   @Column(nullable = false, updatable = false)
+  @JsonProperty(access = Access.READ_ONLY)
   private int nearMatches;
 
   @NonNull

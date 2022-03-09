@@ -3,6 +3,7 @@ package edu.cnm.deepdive.codebreaker.service;
 import edu.cnm.deepdive.codebreaker.model.dao.GameRepository;
 import edu.cnm.deepdive.codebreaker.model.entity.Game;
 import edu.cnm.deepdive.codebreaker.model.entity.User;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.IntStream;
@@ -32,11 +33,10 @@ public class GameService implements AbstractGameService {
   }
 
   @Override
-  public Game get(UUID externalKey, User user) {
+  public Optional<Game> get(UUID externalKey, User user) {
     return repository
         .findByExternalKey(externalKey)
-        .map((game) -> (game.getUser().getId().equals(user.getId())) ? game : null)
-        .orElseThrow();
+        .map((game) -> game.getUser().getId().equals(user.getId()) ? game : null);
   }
 
   private int[] codePoints(String input) {
