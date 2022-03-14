@@ -27,12 +27,24 @@ public class GameController {
   private final AbstractGameService gameService;
   private final AbstractUserService userService;
 
+  /**
+   *
+   *
+   * @param gameService Service providing methods to create and operate on instances of {@link Game}.
+   * @param userService
+   */
   @Autowired
   public GameController(AbstractGameService gameService, AbstractUserService userService) {
     this.gameService = gameService;
     this.userService = userService;
   }
 
+  /**
+   * Starts a game and adds it to the database.
+   *
+   * @param game
+   * @return Fully constructed {@link Game} instance.
+   */
   @PostMapping(
       consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Game> post(@Valid @RequestBody Game game) {

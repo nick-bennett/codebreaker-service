@@ -95,6 +95,11 @@ public class Game {
   @JsonIgnore
   private final List<Guess> guesses = new LinkedList<>();
 
+  /**
+   * Returns the private, unique identifier of this instance.
+   *
+   * @return
+   */
   @NonNull
   public UUID getId() {
     return id;
@@ -114,6 +119,11 @@ public class Game {
     return poolSize;
   }
 
+  /**
+   * Assigns the specified value to the size (in Unicode code points) of the pool.
+   *
+   * @param poolSize
+   */
   public void setPoolSize(int poolSize) {
     this.poolSize = poolSize;
   }
