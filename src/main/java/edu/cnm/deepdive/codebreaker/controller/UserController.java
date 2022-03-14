@@ -2,7 +2,6 @@ package edu.cnm.deepdive.codebreaker.controller;
 
 import edu.cnm.deepdive.codebreaker.model.entity.User;
 import edu.cnm.deepdive.codebreaker.service.AbstractUserService;
-import edu.cnm.deepdive.codebreaker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +30,23 @@ public class UserController {
       consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public User put(@RequestBody User user) {
     return service.updateUser(user);
+  }
+
+  @GetMapping(value = "/me/incognito", produces = MediaType.APPLICATION_JSON_VALUE)
+  public boolean isIncognito() {
+    return service
+        .getCurrentUser()
+        .isIncognito();
+  }
+
+  @PutMapping(value = "/me/incognito",
+      consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public boolean setIncognito(@RequestBody boolean incognito) {
+    User user = service.getCurrentUser();
+    user.setIncognito(incognito);
+    return service
+        .updateUser(user)
+        .isIncognito();
   }
 
 }
