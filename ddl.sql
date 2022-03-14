@@ -3,7 +3,7 @@ create table game
     game_id      UUID         not null,
     created      timestamp    not null,
     external_key UUID         not null,
-    length       integer      not null,
+    length       integer      not null check (length <= 20 AND length >= 1),
     pool         varchar(255) not null,
     pool_size    integer      not null,
     game_text    varchar(20)  not null,
@@ -12,13 +12,13 @@ create table game
 );
 create table guess
 (
-    guess_id      UUID         not null,
-    created       timestamp    not null,
-    exact_matches integer      not null,
-    external_key  UUID         not null,
-    near_matches  integer      not null,
-    guess_text    varchar(255) not null,
-    game_id       UUID         not null,
+    guess_id      UUID        not null,
+    created       timestamp   not null,
+    exact_matches integer     not null,
+    external_key  UUID        not null,
+    near_matches  integer     not null,
+    guess_text    varchar(20) not null,
+    game_id       UUID        not null,
     primary key (guess_id)
 );
 create table user_profile
