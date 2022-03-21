@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
+import edu.cnm.deepdive.codebreaker.view.UserView;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +46,7 @@ public class User {
   @NonNull
   @Column(updatable = false, nullable = false, unique = true, columnDefinition = "UUID")
   @JsonProperty(value = "id", access = Access.READ_ONLY)
+  @JsonView(UserView.Public.class)
   private UUID externalKey;
 
   @NonNull
@@ -51,6 +54,7 @@ public class User {
   @Temporal(TemporalType.TIMESTAMP)
   @Column(updatable = false, nullable = false)
   @JsonProperty(access = Access.READ_ONLY)
+  @JsonView(UserView.Private.class)
   private Date created;
 
   @NonNull
@@ -66,12 +70,15 @@ public class User {
 
   @NonNull
   @Column(nullable = false, unique = true)
+  @JsonView(UserView.Public.class)
   private String displayName;
 
   @Column(length = 255)
+  @JsonView(UserView.Public.class)
   private String avatar;
 
   @Column(nullable = false)
+  @JsonView(UserView.Private.class)
   private boolean incognito;
 
   @NonNull
