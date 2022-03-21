@@ -1,11 +1,11 @@
 package edu.cnm.deepdive.codebreaker.service;
 
-import edu.cnm.deepdive.codebreaker.view.Performance;
+import edu.cnm.deepdive.codebreaker.model.view.GamePerformance;
 
 public interface AbstractPerformanceService {
 
-  Iterable<Performance> getRankingsByDuration(int poolSize, int codeLength, int count);
+  Iterable<GamePerformance> getGameRankingsByDuration(int poolSize, int codeLength, int count);
 
-  Iterable<Performance> getRankingsByGuessCount(int poolSize, int codeLength, int count);
+  Iterable<GamePerformance> getGameRankingsByGuessCount(int poolSize, int codeLength, int count);
 
 }
