@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonView;
+import edu.cnm.deepdive.codebreaker.view.UserView;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,6 +34,7 @@ import org.springframework.lang.NonNull;
 )
 @JsonInclude(Include.NON_NULL)
 @JsonPropertyOrder({"id", "created", "displayName", "avatar", "incognito"})
+@JsonView(UserView.Private.class)
 public class User {
 
   @NonNull
@@ -44,6 +47,7 @@ public class User {
   @NonNull
   @Column(updatable = false, nullable = false, unique = true, columnDefinition = "UUID")
   @JsonProperty(value = "id", access = Access.READ_ONLY)
+  @JsonView(UserView.Public.class)
   private UUID externalKey;
 
   @NonNull
@@ -66,9 +70,11 @@ public class User {
 
   @NonNull
   @Column(nullable = false, unique = true)
+  @JsonView(UserView.Public.class)
   private String displayName;
 
   @Column(length = 255)
+  @JsonView(UserView.Public.class)
   private String avatar;
 
   @Column(nullable = false)

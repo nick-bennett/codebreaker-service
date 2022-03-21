@@ -8,7 +8,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.cnm.deepdive.codebreaker.model.entity.User;
 import edu.cnm.deepdive.codebreaker.view.UserView;
-import java.util.Date;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,32 +15,27 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 @Immutable
-@Subselect("SELECT * FROM game_performance")
+@Subselect("SELECT * FROM user_performance")
 @JsonInclude(Include.NON_NULL)
-@JsonPropertyOrder({"created", "duration", "guessCount", "user"})
+@JsonPropertyOrder({"gamesCompleted", "averageDuration", "averageGuessCount", "user"})
 @JsonView(UserView.Public.class)
-public class GamePerformance {
+public class UserPerformance {
 
   @Id
-  @Column(name = "game_id")
+  @Column(name = "user_id")
   @JsonIgnore
   private UUID id;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "user_id")
+  @JoinColumn(name = "user_id", insertable = false, updatable = false)
   @JsonIgnore
   private User user;
-
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date created;
 
   @JsonIgnore
   private int poolSize;
@@ -49,9 +43,11 @@ public class GamePerformance {
   @JsonIgnore
   private int length;
 
-  private int duration;
+  private int gamesCompleted;
 
-  private int guessCount;
+  private double averageDuration;
+
+  private double averageGuessCount;
 
   public UUID getId() {
     return id;
@@ -59,10 +55,6 @@ public class GamePerformance {
 
   public User getUser() {
     return user;
-  }
-
-  public Date getCreated() {
-    return created;
   }
 
   public int getPoolSize() {
@@ -73,12 +65,16 @@ public class GamePerformance {
     return length;
   }
 
-  public int getDuration() {
-    return duration;
+  public int getGamesCompleted() {
+    return gamesCompleted;
   }
 
-  public int getGuessCount() {
-    return guessCount;
+  public double getAverageDuration() {
+    return averageDuration;
+  }
+
+  public double getAverageGuessCount() {
+    return averageGuessCount;
   }
 
   @JsonProperty("user")
