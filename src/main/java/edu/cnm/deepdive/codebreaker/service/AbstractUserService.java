@@ -1,6 +1,8 @@
 package edu.cnm.deepdive.codebreaker.service;
 
 import edu.cnm.deepdive.codebreaker.model.entity.User;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface AbstractUserService {
 
@@ -9,4 +11,7 @@ public interface AbstractUserService {
   User getCurrentUser();
 
   User updateUser(User received);
+
+  Optional<User> get(UUID externalKey, User requester);
+
 }
